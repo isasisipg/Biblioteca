@@ -1,15 +1,10 @@
 package Modelo;
 
-import DAO.LibroDAO;
-import DAO.PrestamoFila;
-import DAO.PrestamosDAO;
-import DAO.SocioDAO;
+import DAO.*;
 import com.toedter.calendar.JDateChooser;
 import java.util.Iterator;
 import java.util.TreeSet;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -144,16 +139,35 @@ public class TablaPrestamoModelo extends DefaultTableModel {
     @Override
     public void setValueAt(Object value, int row, int col){
         PrestamoFila pf = this.SeleccionarFila(row);
+        this.tPrestamos.remove(pf);
         if (col == 0) {
             pf.setEliminar((Boolean) value);
         }
-        //this.fireTableCellUpdated(row, col);
+        else if (col == 2) {
+            SocioFila sf = (SocioFila) value;
+            pf.setIdSocio(sf.getIdSocio());
+        }
+        else if (col == 3) {
+            LibroFila lf = (LibroFila) value;
+            pf.setIdLibro(lf.getIdLibro());
+        }
+        else if (col == 4) {
+            JDateChooser dt = (JDateChooser) value;
+            dt.setDateFormatString("dd/MM/yyyy");
+            pf.setFechaInicio(dt.getDate()); 
+        }
+        else {
+            JDateChooser dt = (JDateChooser) value;
+            dt.setDateFormatString("dd/MM/yyyy");
+            pf.setFechaFin(dt.getDate());
+        }
+        this.tPrestamos.add(pf);
+        this.fireTableCellUpdated(row, col);
     }
 
-    public void remove_Row(int i) {
+    public void removeRow(int i) {
         PrestamoFila pf = this.SeleccionarFila(i);
         this.tPrestamos.remove(pf);
-       
         this.fireTableRowsDeleted(i, i);
     }
     

@@ -5,22 +5,15 @@
  */
 package Vista;
 
-import DAO.PrestamoFila;
-import Editor.EditorJDateChooser;
-import Editor.RenderJDateChooser;
 import Modelo.TablaPrestamoModelo;
 import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.Map;
-import java.util.TreeSet;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 /**
@@ -99,7 +92,7 @@ public class PrestamosGUI extends javax.swing.JInternalFrame {
         btnImprimir.setText("Imprimir");
 
         tblPrestamos.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        tblPrestamos.setModel(new TablaPrestamoModelo());
+        tblPrestamos.setModel(this.mPrestamo);
         tblPrestamos.setRowHeight(25);
         jScrollPane1.setViewportView(tblPrestamos);
 

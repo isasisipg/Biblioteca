@@ -32,6 +32,8 @@ public class PrestamosDAO {
     }
     
     public TreeSet<PrestamoFila> CargarDatos () {
+        //En este metodo se obtienen todos los datos de la tabla prestamos
+        
         //Conectamos a la BD
         this.conexion.ConectarBD();
         
@@ -51,7 +53,8 @@ public class PrestamosDAO {
         this.conexion.DesconectarBD();
         return this.tPrestamos;
     }
-    public void InsertarPrestamo(PrestamoFila pf){
+    public Integer InsertarPrestamo(PrestamoFila pf) {
+        Integer i = 0;
         //Conectamos a la BD
         this.conexion.ConectarBD();
         String consulta = "insert into prestamos (IdSocio, IdLibro, FechaInicio, FechaFin) values (?, ?, ?, ?)";
@@ -71,8 +74,23 @@ public class PrestamosDAO {
             throw new MisException("Error.\n"+e.toString());
             //e.printStackTrace();
         }
+        //Recogermos el IdPrestamo que se ha cogido para crear el regitro
+        consulta = "select max(IdPrestamo) as maximo from prestamos";
+        this.rst = this.conexion.ConsultaBD(consulta);
+        try {
+            rst.next();
+            i = rst.getInt("maximo");
+        } catch (SQLException e) { 
+            throw new MisException("Error al insertar un Prestamo.\n"+e.toString());
+            //System.out.println("Error al insertar un libro.");
+        } catch (Exception e) {
+            throw new MisException("Error.\n"+e.toString());
+            //e.printStackTrace();
+        }
+        
         //Desconectamos de la BD
         this.conexion.DesconectarBD();
+        return i;
     }
     
     public void ModificarPrestamo(PrestamoFila pf) {

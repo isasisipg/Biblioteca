@@ -1,10 +1,10 @@
 package Controlador;
 
 import DAO.*;
-import Editor.EditorJDateChooser;
 import Editor.RenderJDateChooser;
 import Vista.*;
 import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JDateChooserCellEditor;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.DefaultCellEditor;
@@ -146,7 +146,7 @@ public class ControladorPrestamos implements ActionListener, MouseListener, Tabl
         //Incluimos los datos a añadir en SocioFila
         PrestamoFila pf = new PrestamoFila(sf.getIdSocio(),lf.getIdLibro(),this.pGUI.getDtcInicio().getDate(), this.pGUI.getDtcFin().getDate());
         //Insertamos el socio en BD
-        this.pDAO.InsertarPrestamo(pf);
+        pf.setIdPrestamo(this.pDAO.InsertarPrestamo(pf));
         //Añadir registro de prestamo al JTable
         this.pGUI.getModelo().insertarPrestamoModelo(this.pGUI.getModelo().getRowCount(), pf);
         //Limpiamos los campos texto
@@ -225,7 +225,7 @@ public class ControladorPrestamos implements ActionListener, MouseListener, Tabl
         TableColumn tc = this.pGUI.getTblPrestamos().getColumnModel().getColumn(columna);
         //Incluimos el JDateChooser a la tabla con un Renderer y Editor diseñados.
         tc.setCellRenderer(new RenderJDateChooser());
-        tc.setCellEditor(new EditorJDateChooser());
+        tc.setCellEditor(new JDateChooserCellEditor());
         
     }
     
@@ -280,15 +280,5 @@ public class ControladorPrestamos implements ActionListener, MouseListener, Tabl
             System.out.println("Row " + selectedRow
                                + " is now selected.");
         }}
-
-    private void Cargar_CheckBox_JTable() {
-        JCheckBox ckb = new JCheckBox();
-        ckb.setSelected(false);
-        //Seleccionamos la columna
-        TableColumn tc = this.pGUI.getTblPrestamos().getColumnModel().getColumn(0);
-        //Asignamos el Editor para el CheckBox
-        tc.setCellEditor(new DefaultCellEditor(ckb)); 
-        
-    }
 
 }
