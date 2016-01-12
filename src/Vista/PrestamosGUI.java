@@ -181,6 +181,7 @@ public class PrestamosGUI extends javax.swing.JInternalFrame {
         this.btnAnadir.addActionListener(accion);
         this.btnEditar.addActionListener(accion);
         this.btnEliminar.addActionListener(accion);
+        this.btnImprimir.addActionListener(accion);
     }
 
     public void setMouseListener(MouseListener mouse) {
@@ -193,6 +194,7 @@ public class PrestamosGUI extends javax.swing.JInternalFrame {
             this.btnAnadir.setActionCommand(comando.get("AÑADIR"));
             this.btnEditar.setActionCommand(comando.get("EDITAR"));
             this.btnEliminar.setActionCommand(comando.get("ELIMINAR"));
+            this.btnImprimir.setActionCommand(comando.get("IMPRIMIR"));
         } catch (NullPointerException e) {
             System.out.println("Error de NullPointer Exception");
         } catch (ClassCastException e) {

@@ -131,6 +131,7 @@ public class TablaPrestamoModelo extends DefaultTableModel {
     @Override
    public boolean isCellEditable(int row, int col){
         if ((col == 1) || (col == 4) || (col == 5)) {
+            //|| (col == 5)
             return false;
         }
         return true;
@@ -160,11 +161,14 @@ public class TablaPrestamoModelo extends DefaultTableModel {
             JDateChooser dt = (JDateChooser) value;
             dt.setDateFormatString("dd/MM/yyyy");
             pf.setFechaFin(dt.getDate());
+            //pf.setFechaFin((Date) value);
+            
         }
         this.tPrestamos.add(pf);
         this.fireTableCellUpdated(row, col);
     }
 
+    @Override
     public void removeRow(int i) {
         PrestamoFila pf = this.SeleccionarFila(i);
         this.tPrestamos.remove(pf);

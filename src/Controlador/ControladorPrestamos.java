@@ -2,13 +2,13 @@ package Controlador;
 
 import DAO.*;
 import Editor.RenderJDateChooser;
+import Exception.MisException;
 import Vista.*;
 import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JDateChooserCellEditor;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -16,6 +16,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -37,13 +40,15 @@ public class ControladorPrestamos implements ActionListener, MouseListener, Tabl
         map.put("AÑADIR","AÑADIR");
         map.put("EDITAR","EDITAR");
         map.put("ELIMINAR","ELIMINAR");
+        map.put("IMPRIMIR","IMPRIMIR");
         this.pGUI.setListener(this);
         this.pGUI.setComandos(this.map);
         this.pGUI.setMouseListener(this);
         //Activamos botones
         this.pGUI.getBtnInsertar().setEnabled(true);
         this.pGUI.getBtnEditar().setEnabled(false);
-        this.pGUI.getBtnEliminar().setEnabled(false);       
+        this.pGUI.getBtnEliminar().setEnabled(false);
+        this.pGUI.getBtnEliminar().setEnabled(true);
         //Cargamos los datos de los combox y el JTable
         Cargar_Datos();
     }     
@@ -106,6 +111,9 @@ public class ControladorPrestamos implements ActionListener, MouseListener, Tabl
         else if (acto.equalsIgnoreCase("ELIMINAR")){
             this.btnElminarActionPerformed(e);
         }    
+        else if (acto.equalsIgnoreCase("IMPRIMIR")){
+            this.btnImprimirActionPerformed(e);
+        }
     }
 
     @Override
@@ -122,6 +130,7 @@ public class ControladorPrestamos implements ActionListener, MouseListener, Tabl
         this.pGUI.getBtnInsertar().setEnabled(false);
         this.pGUI.getBtnEditar().setEnabled(true);
         this.pGUI.getBtnEliminar().setEnabled(true);
+        this.pGUI.getBtnImprimir().setEnabled(false);
     }
 
     @Override
@@ -158,6 +167,7 @@ public class ControladorPrestamos implements ActionListener, MouseListener, Tabl
         this.pGUI.getBtnInsertar().setEnabled(true);
         this.pGUI.getBtnEditar().setEnabled(false);
         this.pGUI.getBtnEliminar().setEnabled(false);
+        this.pGUI.getBtnImprimir().setEnabled(true);
     }
 
     private void btnEditarActionPerformed(ActionEvent e) {
@@ -186,6 +196,7 @@ public class ControladorPrestamos implements ActionListener, MouseListener, Tabl
         this.pGUI.getBtnInsertar().setEnabled(true);
         this.pGUI.getBtnEditar().setEnabled(false);
         this.pGUI.getBtnEliminar().setEnabled(false);
+        this.pGUI.getBtnImprimir().setEnabled(true);
     }
 
     private void btnElminarActionPerformed(ActionEvent e) {
@@ -218,8 +229,9 @@ public class ControladorPrestamos implements ActionListener, MouseListener, Tabl
         this.pGUI.getBtnInsertar().setEnabled(true);
         this.pGUI.getBtnEditar().setEnabled(false);
         this.pGUI.getBtnEliminar().setEnabled(false);
+        this.pGUI.getBtnImprimir().setEnabled(true);
     }
-
+    
     private void IncluirFechaAJTable(int columna){
         //Seleccionamos la columna
         TableColumn tc = this.pGUI.getTblPrestamos().getColumnModel().getColumn(columna);
@@ -280,5 +292,24 @@ public class ControladorPrestamos implements ActionListener, MouseListener, Tabl
             System.out.println("Row " + selectedRow
                                + " is now selected.");
         }}
+
+    private void btnImprimirActionPerformed(ActionEvent e) {
+        TreeSet<PrestamoFila> tPrestamos = (TreeSet)this.pGUI.getModelo().getData();
+        try{
+            Map parameters = new HashMap();
+            parameters.put("TITULO", "IMPRESIÓN DE PRESTAMOS");
+            parameters.put("FECHA", new java.util.Date());
+            JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource((TreeSet) this.pGUI.getModelo().getData());
+            JasperReport report = JasperCompileManager.compileReport("./src/reports/Biblioteca.jrxml");
+            JasperPrint print = JasperFillManager.fillReport(report, parameters, ds);
+            // Exporta el informe a PDF
+            JasperExportManager.exportReportToPdfFile(print,"./src/reports/InformePrestamos.pdf");
+            //Para visualizar el pdf directamente desde java
+            JasperViewer.viewReport(print, false);
+        } catch (JRException ex){
+            ex.printStackTrace();
+            throw new MisException("Error generar la impresión en pdf.\n"+ex.toString());
+        }    
+    }
 
 }
